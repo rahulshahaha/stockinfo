@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+
+.card{
+  width: 24%;
+  height: 25vh;
+  background-color: black;
+  float: left;
+  margin: 1% .5% 0% .5%;
+}
+
+.companyName, .currentPrice{
+  color: white;
+  margin-left: 10px;
+}
+
+.companyName{
+  overflow:hidden;
+  text-overflow: ellipsis;
+  margin: 0 0 0 10px;
+  font-size: calc(0.5vw + 15pt);
+  white-space: nowrap;
+
+}
+
+.currentPrice{
+  float: left;
+}
+
+.percentChangeUp{
+  color: #007000;
+}
+
+.percentChangeDown{
+  color: #D2222D;
+}
+
+.currentPrice, .percentChangeDown, .percentChangeUp{
+  font-size: calc(0.25vw + 10pt);
+  margin-top: 0;
+}
+
+@media (max-width: 750px) {
+  .card{
+    width: 49%;
+  }
+}
+
+
+@media (max-width: 375px) {
+  .card{
+    width: 99%;
+  }
+}
