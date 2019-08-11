@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/rahulshahaha/stockinfo#readme",
   "dependencies": {
+    "apexcharts": "^3.8.4",
     "babel-cli": "^6.26.0",
     "babel-preset-react-app": "^3.1.2"
   }

@@ -6,6 +6,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+//import ApexCharts from 'apexcharts'
 var e = React.createElement;
 
 var Card = function (_React$Component) {
@@ -59,7 +60,7 @@ var Deck = function (_React$Component2) {
         _this2.state = {
             stocks: [{ ticker: "sfdfsd", name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp" }, { ticker: "W", name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown" }, { ticker: "B", name: "B", price: 123 }, { ticker: "C", name: "C", price: 123 }, { ticker: "D", name: "D", price: 123 }, { ticker: "E", name: "E", price: 123 }, { ticker: "F", name: "F", price: 123 }, { ticker: "G", name: "G", price: 123 }]
         };
-        //this.getStockData();
+        _this2.getStockData();
         return _this2;
     }
 
@@ -116,6 +117,36 @@ var Deck = function (_React$Component2) {
     }]);
 
     return Deck;
+}(React.Component);
+
+var Chart = function (_React$Component3) {
+    _inherits(Chart, _React$Component3);
+
+    function Chart(props) {
+        _classCallCheck(this, Chart);
+
+        var _this4 = _possibleConstructorReturn(this, (Chart.__proto__ || Object.getPrototypeOf(Chart)).call(this, props));
+
+        _this4.state = {
+            chart: {
+                type: 'line'
+            },
+            series: [{
+                name: 'sales',
+                data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+            }],
+            xaxis: {
+                categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+            }
+        };
+
+        var chart = new ApexCharts(document.getElementById("root1"), _this4.state);
+
+        chart.render();
+        return _this4;
+    }
+
+    return Chart;
 }(React.Component);
 
 ReactDOM.render(React.createElement(Deck, null), document.getElementById('root'));

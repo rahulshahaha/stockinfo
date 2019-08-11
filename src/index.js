@@ -1,4 +1,4 @@
-
+//import ApexCharts from 'apexcharts'
 const e = React.createElement;
 
 class Card extends React.Component {
@@ -29,7 +29,7 @@ class Deck extends React.Component {
                 {ticker: "G",name: "G", price: 123}
             ]
         };
-          //this.getStockData();
+          this.getStockData();
       }
 
     getStockData(){
@@ -79,9 +79,28 @@ class Deck extends React.Component {
     return <div className="deck">{this.generateCards()}</div>
  }
 }
- 
 
-
+class Chart extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state ={
+    chart: {
+      type: 'line'
+    },
+    series: [{
+      name: 'sales',
+      data: [30,40,35,50,49,60,70,91,125]
+    }],
+    xaxis: {
+      categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+    }
+  }
+  
+  var chart = new ApexCharts(document.getElementById("root1"), this.state);
+   
+  chart.render();
+}
+}
 ReactDOM.render(<Deck />, document.getElementById('root'));
 
 
