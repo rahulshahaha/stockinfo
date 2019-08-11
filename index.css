@@ -18,7 +18,11 @@ code {
   height: 25vh;
   background-color: black;
   float: left;
+  /* overflow: hidden; */
   margin: 1% .5% 0% .5%;
+}
+.lineChart{
+  width: 100%; height: auto;
 }
 
 .companyName, .currentPrice{
@@ -63,4 +67,12 @@ code {
   .card{
     width: 99%;
   }
+}
+
+.linechart_path {
+  stroke-width: 3; 
+  fill: none;      
+}
+.linechart_axis {
+  stroke: #bdc3c7;
 }

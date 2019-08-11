@@ -1,5 +1,5 @@
-//import ApexCharts from 'apexcharts'
-const e = React.createElement;
+
+
 
 class Card extends React.Component {
  
@@ -9,6 +9,7 @@ class Card extends React.Component {
             <h1 className="companyName">{this.props.name}</h1>
             <h6 className="currentPrice">${this.props.price}</h6>
             <h6 className={this.props.changeType}>&nbsp; ({this.props.percentChange}%)</h6>
+            <div><App chartData ={this.props.chartData}/></div>
         </div>
      )
  }
@@ -39,7 +40,7 @@ class Deck extends React.Component {
     
     const Http = new XMLHttpRequest();
     const url='https://cloud.iexapis.com/stable/stock/market/batch?symbols='
-    +symbols+'&types=quote&token=pk_ea3fad39b66c4c08a98acce72eda2aaa';
+    +symbols+'&types=quote,chart&range=1d&token=pk_ea3fad39b66c4c08a98acce72eda2aaa';
     Http.open("GET", url);
     
     
@@ -54,8 +55,16 @@ class Deck extends React.Component {
             var percentChange = (stockData[key].quote.latestPrice - stockData[key].quote.open) / stockData[key].quote.open;
             percentChange = Math.round(percentChange * 100 * 100) / 100;
             var changeType = percentChange >= 0 ? "percentChangeUp" : "percentChangeDown";
-
-            var b = {name: name,price: price,ticker: ticker,percentChange: percentChange, changeType: changeType};
+            var chartData = [];
+            for(var key2 in stockData[key].chart){
+                var dateKey;
+                dateKey = stockData[key].chart[key2].date + " " + stockData[key].chart[key2].minute;
+                //console.log(Date.parse(stockData[key].chart[key2].date));
+                //console.log(Date.parse(dateKey));
+                chartData.push({x: Date.parse(dateKey), y: stockData[key].chart[key2].close})
+            }
+            console.log(chartData);
+            var b = {name: name,price: price,ticker: ticker,percentChange: percentChange, changeType: changeType, chartData: chartData};
             stocks.push(b);
         }
        this.setState({stocks: stocks});
@@ -69,7 +78,7 @@ class Deck extends React.Component {
     generateCards(){
         var stateValues = this.state.stocks;
         var cardsList = stateValues.map(function(s){
-            return <Card key={s.ticker} name={s.name} price={s.price} percentChange={s.percentChange} changeType={s.changeType} />;
+            return <Card key={s.ticker} name={s.name} price={s.price} percentChange={s.percentChange} changeType={s.changeType} chartData={s.chartData} />;
         });
 
         return cardsList;
@@ -80,27 +89,110 @@ class Deck extends React.Component {
  }
 }
 
-class Chart extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state ={
-    chart: {
-      type: 'line'
-    },
-    series: [{
-      name: 'sales',
-      data: [30,40,35,50,49,60,70,91,125]
-    }],
-    xaxis: {
-      categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+
+class App extends React.Component {
+  createFakeData(){
+    // This function creates data that doesn't look entirely random
+    var data = []
+    for (let x = 0; x <= 30; x++) {
+      const random = Math.random();
+      const temp = data.length > 0 ? data[data.length-1].y : 50;
+      const y = random >= .45 ? temp + Math.floor(random * 20) : temp - Math.floor(random * 20);
+      data.push({x,y})
     }
+    // data = [
+    //     {x:0, y:0},
+    //     {x:1,y:1},
+    //     {x:3,y:-1}
+    // ]
+    return data;
   }
-  
-  var chart = new ApexCharts(document.getElementById("root1"), this.state);
-   
-  chart.render();
+  render() {
+    return (
+      <div className="App">
+        <LineChart className="lineChart" data={this.createFakeData()} />
+      </div>
+    );
+  }
 }
-}
+
+class LineChart extends React.Component {
+
+    // GET MAX & MIN X
+    getMinX() {
+        const {data} = this.props;
+        return data[0].x;
+      }
+      getMaxX() {
+        const {data} = this.props;
+        return data[data.length - 1].x;
+      }
+      // GET MAX & MIN Y
+      getMinY() {
+        const {data} = this.props;
+        return data.reduce((min, p) => p.y < min ? p.y : min, data[0].y);
+      }
+      getMaxY() {
+        const {data} = this.props;
+        return data.reduce((max, p) => p.y > max ? p.y : max, data[0].y);
+      }
+    
+      getSvgX(x) {
+        const {svgWidth} = this.props;
+        return (x / this.getMaxX() * svgWidth);
+      }
+      getSvgY(y) {
+        const {svgHeight} = this.props;
+        return svgHeight - (y / this.getMaxY() * svgHeight);
+      }
+    
+      makeAxis() {
+        const minX = this.getMinX(), maxX = this.getMaxX();
+        const minY = this.getMinY(), maxY = this.getMaxY();
+      return (
+          <g className="linechart_axis">
+            <line
+              x1={this.getSvgX(minX)} y1={this.getSvgY(minY)}
+              x2={this.getSvgX(maxX)} y2={this.getSvgY(minY)} />
+            <line
+              x1={this.getSvgX(minX)} y1={this.getSvgY(minY)}
+              x2={this.getSvgX(minX)} y2={this.getSvgY(maxY)} />
+          </g>
+          );
+        }
+        makePath() {
+            const {data, color} = this.props;
+            let pathD = "M " + this.getSvgX(data[0].x) + " " + this.getSvgY(data[0].y) + " ";
+        pathD += data.map((point, i) => {
+              return "L " + this.getSvgX(point.x) + " " + this.getSvgY(point.y) + " ";
+            });
+        return (
+          <path className="linechart_path" d={pathD} style={{stroke: color}} />
+            );
+          }
+        render() {
+            const {svgHeight, svgWidth} = this.props;
+        return (
+              <svg className = "lineChart" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
+                {this.makePath()}
+                {/* {this.makeAxis()} */}
+              </svg>
+            );
+          }
+    }
+    LineChart.defaultProps = {
+      data: [
+          {x: 1, y:1},
+          {x:2, y:2}
+      ],  
+      color: '#2196F3',  
+      svgHeight: 100,  
+      svgWidth: 300
+    }
+
+
+
+
 ReactDOM.render(<Deck />, document.getElementById('root'));
 
 
