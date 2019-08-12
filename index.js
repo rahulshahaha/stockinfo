@@ -160,7 +160,7 @@ var Deck = function (_React$Component3) {
         value: function getStockData() {
             var _this4 = this;
 
-            var symbols = "w,f,ba,aapl,fb,jnj";
+            var symbols = "jnj,corr,cgc,work,v,spy,rok,w";
 
             var Http = new XMLHttpRequest();
             var url = 'https://cloud.iexapis.com/stable/stock/market/batch?symbols=' + symbols + '&types=quote,chart&range=1d&token=pk_ea3fad39b66c4c08a98acce72eda2aaa';
