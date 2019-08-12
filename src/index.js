@@ -58,7 +58,7 @@ class Chart extends React.Component {
         var averageY = (maxY + minY) / 2;
 
         var coordinatesList = data.map(function(d){
-            var xCoordinate = ((d.x - minX) / (maxX - minX)) * 100;
+            var xCoordinate = ((d.x - minX) / (maxX - minX)) * 300;
             xCoordinate = xCoordinate.toString();
 
             var yCoordinate = ((d.y - minY) / (maxY - minY)) * 100;
