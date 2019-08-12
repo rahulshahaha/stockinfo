@@ -102,7 +102,7 @@ var Chart = function (_React$Component2) {
             var averageY = (maxY + minY) / 2;
 
             var coordinatesList = data.map(function (d) {
-                var xCoordinate = (d.x - minX) / (maxX - minX) * 300;
+                var xCoordinate = (d.x - minX) / (maxX - minX) * 250;
                 xCoordinate = xCoordinate.toString();
 
                 var yCoordinate = (d.y - minY) / (maxY - minY) * 100;
