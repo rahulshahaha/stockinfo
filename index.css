@@ -18,13 +18,9 @@ code {
   height: 25vh;
   background-color: black;
   float: left;
-  /* overflow: hidden; */
   margin: 1% .5% 0% .5%;
 }
-.lineChart{
-  width: 100%; 
-  height: 100px;
-}
+
 
 .companyName, .currentPrice{
   color: white;
@@ -55,6 +51,15 @@ code {
 .currentPrice, .percentChangeDown, .percentChangeUp{
   font-size: calc(0.25vw + 10pt);
   margin-top: 0;
+  margin-bottom: 0;
+}
+
+.chart{
+  width: 24vw; 
+}
+
+.chartLine{
+  width:100%;
 }
 
 @media (max-width: 750px) {
@@ -68,12 +73,4 @@ code {
   .card{
     width: 99%;
   }
-}
-
-.linechart_path {
-  stroke-width: 3; 
-  fill: none;      
-}
-.linechart_axis {
-  stroke: #bdc3c7;
 }
