@@ -99,13 +99,13 @@ var Chart = function (_React$Component2) {
                 }
             }
 
-            var averageY = (maxY + minY) / 2;
+            //var averageY = (maxY + minY) / 2;
 
             var coordinatesList = data.map(function (d) {
                 var xCoordinate = (d.x - minX) / (maxX - minX) * 250;
                 xCoordinate = xCoordinate.toString();
 
-                var yCoordinate = (d.y - minY) / (maxY - minY) * 100;
+                var yCoordinate = (maxY - d.y) / (maxY - minY) * 100;
                 yCoordinate = yCoordinate.toString();
 
                 // console.log(xCoordinate + "," + yCoordinate);
@@ -178,11 +178,15 @@ var Deck = function (_React$Component3) {
                     percentChange = Math.round(percentChange * 100 * 100) / 100;
                     var changeType = percentChange >= 0 ? "percentChangeUp" : "percentChangeDown";
                     var chartData = [];
+                    var lastValidKey;
                     for (var key2 in stockData[key].chart) {
                         var dateKey;
                         dateKey = stockData[key].chart[key2].date + " " + stockData[key].chart[key2].minute;
                         if (stockData[key].chart[key2].close != null) {
                             chartData.push({ x: Date.parse(dateKey), y: stockData[key].chart[key2].close });
+                            lastValidKey = key2;
+                        } else {
+                            chartData.push({ x: Date.parse(dateKey), y: stockData[key].chart[lastValidKey].close });
                         }
                     }
                     var b = { name: name, price: price, ticker: ticker, percentChange: percentChange, changeType: changeType, chartData: chartData };
