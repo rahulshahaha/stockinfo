@@ -66,11 +66,25 @@ code {
   .card{
     width: 49%;
   }
+  .chart{
+    width: 49vw; 
+  }
+  
+  .chartLine{
+    width:49vw;
+  }
 }
 
 
 @media (max-width: 375px) {
   .card{
     width: 99%;
+  }
+  .chart{
+    width: 99vw; 
+  }
+  
+  .chartLine{
+    width:99vw;
   }
 }
