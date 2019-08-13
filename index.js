@@ -174,7 +174,7 @@ var Deck = function (_React$Component3) {
                     var name = stockData[key].quote.companyName;
                     var price = stockData[key].quote.latestPrice;
                     var ticker = stockData[key].quote.symbol;
-                    var percentChange = (stockData[key].quote.latestPrice - stockData[key].quote.open) / stockData[key].quote.open;
+                    var percentChange = (stockData[key].quote.latestPrice - stockData[key].quote.previousClose) / stockData[key].quote.previousClose;
                     percentChange = Math.round(percentChange * 100 * 100) / 100;
                     var changeType = percentChange >= 0 ? "percentChangeUp" : "percentChangeDown";
                     var chartData = [];
