@@ -39,7 +39,7 @@ var Card = function (_React$Component) {
                     this.props.percentChange,
                     "%)"
                 ),
-                React.createElement(Chart, { chartData: this.props.chartData })
+                React.createElement(Chart, { chartData: this.props.chartData, width: this.props.width, height: this.props.height })
             );
         }
     }]);
@@ -59,7 +59,6 @@ var Chart = function (_React$Component2) {
     _createClass(Chart, [{
         key: "generateChart",
         value: function generateChart() {
-            console.log(this.props.chartData);
             var data = this.props.chartData;
             var minX = 0,
                 maxX = 0,
@@ -99,25 +98,29 @@ var Chart = function (_React$Component2) {
                 }
             }
 
-            //var averageY = (maxY + minY) / 2;
+            var width;
+            if (width >= 750) {
+                width = this.props.width * 0.24;
+            } else if (width >= 375) {
+                width = this.props.width * 0.49;
+            } else {
+                width = this.props.width * 0.99;
+            }
+            var height = this.props.height * 0.10;
 
             var coordinatesList = data.map(function (d) {
-                var xCoordinate = (d.x - minX) / (maxX - minX) * 250;
+                var xCoordinate = (d.x - minX) / (maxX - minX) * width;
                 xCoordinate = xCoordinate.toString();
 
-                var yCoordinate = (maxY - d.y) / (maxY - minY) * 100;
+                var yCoordinate = (maxY - d.y) / (maxY - minY) * height;
                 yCoordinate = yCoordinate.toString();
-
-                // console.log(xCoordinate + "," + yCoordinate);
                 return xCoordinate + "," + yCoordinate;
             });
-            //console.log(coordinatesList);
 
             var coordinates = "";
 
             for (point in coordinatesList) {
                 coordinates = coordinates + coordinatesList[point] + " ";
-                //console.log(point);
             }
             return coordinates;
         }
@@ -152,13 +155,24 @@ var Deck = function (_React$Component3) {
             stocks: [{ ticker: "sfdfsd", name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp" }, { ticker: "W", name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown" }, { ticker: "B", name: "B", price: 123 }, { ticker: "C", name: "C", price: 123 }, { ticker: "D", name: "D", price: 123 }, { ticker: "E", name: "E", price: 123 }, { ticker: "F", name: "F", price: 123 }, { ticker: "G", name: "G", price: 123 }],
             width: window.innerWidth,
             height: window.innerHeight
+
         };
         _this3.getStockData();
-        //window.addEventListener('resize', resizedWindow);
+        window.addEventListener("resize", _this3.windowResized.bind(_this3));
         return _this3;
     }
 
     _createClass(Deck, [{
+        key: "windowResized",
+        value: function windowResized() {
+
+            this.setState({
+                stocks: this.state.stocks,
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        }
+    }, {
         key: "getStockData",
         value: function getStockData() {
             var _this4 = this;
@@ -175,7 +189,6 @@ var Deck = function (_React$Component3) {
                 var stocks = [];
                 for (var key in stockData) {
                     var name = stockData[key].quote.companyName;
-                    console.log(name);
                     var price = stockData[key].quote.latestPrice;
                     var ticker = stockData[key].quote.symbol;
                     var percentChange = (stockData[key].quote.latestPrice - stockData[key].quote.previousClose) / stockData[key].quote.previousClose;
@@ -186,7 +199,6 @@ var Deck = function (_React$Component3) {
                     for (var key2 in stockData[key].chart) {
                         var dateKey;
                         dateKey = stockData[key].chart[key2].date + " " + stockData[key].chart[key2].minute;
-                        console.log(key2);
                         if (stockData[key].chart[key2].close != null) {
                             chartData.push({ x: Date.parse(dateKey), y: stockData[key].chart[key2].close });
                             lastValidKey = key2;
@@ -208,8 +220,10 @@ var Deck = function (_React$Component3) {
         key: "generateCards",
         value: function generateCards() {
             var stateValues = this.state.stocks;
+            var heightS = this.state.height;
+            var widthS = this.state.width;
             var cardsList = stateValues.map(function (s) {
-                return React.createElement(Card, { key: s.ticker, name: s.name, price: s.price, percentChange: s.percentChange, changeType: s.changeType, chartData: s.chartData });
+                return React.createElement(Card, { key: s.ticker, name: s.name, price: s.price, percentChange: s.percentChange, changeType: s.changeType, chartData: s.chartData, height: heightS, width: widthS });
             });
 
             return cardsList;

@@ -11,7 +11,7 @@ class Card extends React.Component {
             <h1 className="companyName">{this.props.name}</h1>
             <h6 className="currentPrice">${this.props.price}</h6>
             <h6 className={this.props.changeType}>&nbsp; ({this.props.percentChange}%)</h6>
-            <Chart chartData = {this.props.chartData} />
+            <Chart chartData = {this.props.chartData} width={this.props.width} height={this.props.height} />
         </div>
      )
  }
@@ -20,7 +20,6 @@ class Card extends React.Component {
 class Chart extends React.Component {
  
     generateChart(){
-        console.log(this.props.chartData);
         var data = this.props.chartData;
         var minX = 0, maxX = 0, minY = 0, maxY = 0;
 
@@ -57,26 +56,31 @@ class Chart extends React.Component {
             }
         }
         
-        //var averageY = (maxY + minY) / 2;
+
+        var width;
+        if(width >= 750){
+        width = this.props.width * 0.24;
+        }else if(width >= 375){
+            width = this.props.width * 0.49;
+        }else{
+            width = this.props.width * 0.99;
+        }
+        var height = this.props.height * 0.10;
 
         var coordinatesList = data.map(function(d){
-            var xCoordinate = ((d.x - minX) / (maxX - minX)) * 250;
+            var xCoordinate = ((d.x - minX) / (maxX - minX)) * width;
             xCoordinate = xCoordinate.toString();
 
-            var yCoordinate = ((maxY - d.y) / (maxY - minY)) * 100;
+            var yCoordinate = ((maxY - d.y) / (maxY - minY)) * height;
             yCoordinate = yCoordinate.toString();
-
-           // console.log(xCoordinate + "," + yCoordinate);
             return xCoordinate + "," + yCoordinate;
             
         });
-        //console.log(coordinatesList);
 
         var coordinates = "";
 
         for(point in coordinatesList){
             coordinates = coordinates + coordinatesList[point] + " ";
-            //console.log(point);
         }
         return coordinates;
     }
@@ -111,11 +115,22 @@ class Deck extends React.Component {
             ],
             width: window.innerWidth,
             height: window.innerHeight
+
         };
         this.getStockData();
-        //window.addEventListener('resize', resizedWindow);
+        window.addEventListener("resize", this.windowResized.bind(this));
       }
 
+      windowResized(){
+       
+
+        this.setState(
+            {
+                stocks: this.state.stocks,
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+      }
 
     getStockData(){
         var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
@@ -134,7 +149,6 @@ class Deck extends React.Component {
         var stocks = [];
         for(var key in stockData){
             var name = stockData[key].quote.companyName;
-            console.log(name);
             var price = stockData[key].quote.latestPrice;
             var ticker = stockData[key].quote.symbol;
             var percentChange = (stockData[key].quote.latestPrice - stockData[key].quote.previousClose) / stockData[key].quote.previousClose;
@@ -145,7 +159,6 @@ class Deck extends React.Component {
             for(var key2 in stockData[key].chart){
                 var dateKey;
                 dateKey = stockData[key].chart[key2].date + " " + stockData[key].chart[key2].minute;
-                console.log(key2);
                 if(stockData[key].chart[key2].close != null){
                 chartData.push({x: Date.parse(dateKey), y: stockData[key].chart[key2].close})
                 lastValidKey = key2;
@@ -168,8 +181,10 @@ class Deck extends React.Component {
     
     generateCards(){
         var stateValues = this.state.stocks;
+        var heightS = this.state.height;
+        var widthS = this.state.width;
         var cardsList = stateValues.map(function(s){
-            return <Card key={s.ticker} name={s.name} price={s.price} percentChange={s.percentChange} changeType={s.changeType} chartData={s.chartData} />;
+            return <Card key={s.ticker} name={s.name} price={s.price} percentChange={s.percentChange} changeType={s.changeType} chartData={s.chartData} height={heightS} width={widthS} />;
         });
 
         return cardsList;
