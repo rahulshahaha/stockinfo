@@ -149,9 +149,12 @@ var Deck = function (_React$Component3) {
         var _this3 = _possibleConstructorReturn(this, (Deck.__proto__ || Object.getPrototypeOf(Deck)).call(this, props));
 
         _this3.state = {
-            stocks: [{ ticker: "sfdfsd", name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp" }, { ticker: "W", name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown" }, { ticker: "B", name: "B", price: 123 }, { ticker: "C", name: "C", price: 123 }, { ticker: "D", name: "D", price: 123 }, { ticker: "E", name: "E", price: 123 }, { ticker: "F", name: "F", price: 123 }, { ticker: "G", name: "G", price: 123 }]
+            stocks: [{ ticker: "sfdfsd", name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp" }, { ticker: "W", name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown" }, { ticker: "B", name: "B", price: 123 }, { ticker: "C", name: "C", price: 123 }, { ticker: "D", name: "D", price: 123 }, { ticker: "E", name: "E", price: 123 }, { ticker: "F", name: "F", price: 123 }, { ticker: "G", name: "G", price: 123 }],
+            width: window.innerWidth,
+            height: window.innerHeight
         };
         _this3.getStockData();
+        //window.addEventListener('resize', resizedWindow);
         return _this3;
     }
 
@@ -160,7 +163,7 @@ var Deck = function (_React$Component3) {
         value: function getStockData() {
             var _this4 = this;
 
-            var symbols = "jnj,corr,cgc,work,v,spy,rok,w";
+            var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
 
             var Http = new XMLHttpRequest();
             var url = 'https://cloud.iexapis.com/stable/stock/market/batch?symbols=' + symbols + '&types=quote,chart&range=1d&token=pk_ea3fad39b66c4c08a98acce72eda2aaa';
@@ -172,21 +175,25 @@ var Deck = function (_React$Component3) {
                 var stocks = [];
                 for (var key in stockData) {
                     var name = stockData[key].quote.companyName;
+                    console.log(name);
                     var price = stockData[key].quote.latestPrice;
                     var ticker = stockData[key].quote.symbol;
                     var percentChange = (stockData[key].quote.latestPrice - stockData[key].quote.previousClose) / stockData[key].quote.previousClose;
                     percentChange = Math.round(percentChange * 100 * 100) / 100;
                     var changeType = percentChange >= 0 ? "percentChangeUp" : "percentChangeDown";
                     var chartData = [];
-                    var lastValidKey;
+                    var lastValidKey = 0;
                     for (var key2 in stockData[key].chart) {
                         var dateKey;
                         dateKey = stockData[key].chart[key2].date + " " + stockData[key].chart[key2].minute;
+                        console.log(key2);
                         if (stockData[key].chart[key2].close != null) {
                             chartData.push({ x: Date.parse(dateKey), y: stockData[key].chart[key2].close });
                             lastValidKey = key2;
                         } else {
-                            chartData.push({ x: Date.parse(dateKey), y: stockData[key].chart[lastValidKey].close });
+                            if (lastValidKey != 0) {
+                                chartData.push({ x: Date.parse(dateKey), y: stockData[key].chart[lastValidKey].close });
+                            }
                         }
                     }
                     var b = { name: name, price: price, ticker: ticker, percentChange: percentChange, changeType: changeType, chartData: chartData };

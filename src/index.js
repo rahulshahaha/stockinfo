@@ -2,6 +2,8 @@
 
 
 class Card extends React.Component {
+
+
  
  render(){
      return(
@@ -106,13 +108,17 @@ class Deck extends React.Component {
                 {ticker: "E",name: "E", price: 123},
                 {ticker: "F",name: "F", price: 123},
                 {ticker: "G",name: "G", price: 123}
-            ]
+            ],
+            width: window.innerWidth,
+            height: window.innerHeight
         };
-          this.getStockData();
+        this.getStockData();
+        //window.addEventListener('resize', resizedWindow);
       }
 
+
     getStockData(){
-        var symbols = "jnj,corr,cgc,work,v,spy,rok,w";
+        var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
     
     
     
@@ -128,21 +134,25 @@ class Deck extends React.Component {
         var stocks = [];
         for(var key in stockData){
             var name = stockData[key].quote.companyName;
+            console.log(name);
             var price = stockData[key].quote.latestPrice;
             var ticker = stockData[key].quote.symbol;
             var percentChange = (stockData[key].quote.latestPrice - stockData[key].quote.previousClose) / stockData[key].quote.previousClose;
             percentChange = Math.round(percentChange * 100 * 100) / 100;
             var changeType = percentChange >= 0 ? "percentChangeUp" : "percentChangeDown";
             var chartData = [];
-            var lastValidKey;
+            var lastValidKey = 0;
             for(var key2 in stockData[key].chart){
                 var dateKey;
                 dateKey = stockData[key].chart[key2].date + " " + stockData[key].chart[key2].minute;
+                console.log(key2);
                 if(stockData[key].chart[key2].close != null){
                 chartData.push({x: Date.parse(dateKey), y: stockData[key].chart[key2].close})
                 lastValidKey = key2;
                 }else{
+                    if(lastValidKey != 0){
                     chartData.push({x: Date.parse(dateKey), y: stockData[key].chart[lastValidKey].close})   
+                    }
                 }
             }
             var b = {name: name,price: price,ticker: ticker,percentChange: percentChange, changeType: changeType, chartData: chartData};
