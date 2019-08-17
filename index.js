@@ -175,7 +175,8 @@ var Deck = function (_React$Component3) {
         var _this3 = _possibleConstructorReturn(this, (Deck.__proto__ || Object.getPrototypeOf(Deck)).call(this, props));
 
         _this3.state = {
-            stocks: [{ ticker: "sfdfsd", name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp" }, { ticker: "W", name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown" }, { ticker: "B", name: "B", price: 123 }, { ticker: "C", name: "C", price: 123 }, { ticker: "D", name: "D", price: 123 }, { ticker: "E", name: "E", price: 123 }, { ticker: "F", name: "F", price: 123 }, { ticker: "G", name: "G", price: 123 }],
+            symbols: "",
+            stocks: [],
             currentholdings: [],
             // currentholdings:[
             //     {ticker: "w",quantity: 47, price: 120.4},
@@ -191,7 +192,7 @@ var Deck = function (_React$Component3) {
             height: window.innerHeight
         };
         console.log(_this3.state.currentholdings);
-        _this3.getStockData();
+        //this.getStockData();
         window.addEventListener("resize", _this3.windowResized.bind(_this3));
         return _this3;
     }
@@ -201,18 +202,18 @@ var Deck = function (_React$Component3) {
         value: function windowResized() {
 
             this.setState({
-                stocks: this.state.stocks,
                 width: window.innerWidth,
-                height: window.innerHeight,
-                currentholdings: this.state.currentholdings
+                height: window.innerHeight
             });
         }
     }, {
         key: "getStockData",
-        value: function getStockData() {
+        value: function getStockData(symbols) {
             var _this4 = this;
 
-            var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
+            // var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
+            // var symbols = this.state.symbols;
+
 
             var Http = new XMLHttpRequest();
             var url = 'https://cloud.iexapis.com/stable/stock/market/batch?symbols=' + symbols + '&types=quote,chart&range=1d&token=pk_ea3fad39b66c4c08a98acce72eda2aaa';
@@ -247,10 +248,7 @@ var Deck = function (_React$Component3) {
                     stocks.push(b);
                 }
                 _this4.setState({
-                    stocks: stocks,
-                    width: window.innerWidth,
-                    height: window.innerHeight,
-                    currentholdings: _this4.state.currentholdings
+                    stocks: stocks
                 });
             };
 
@@ -297,9 +295,6 @@ var Deck = function (_React$Component3) {
             }
 
             this.setState({
-                stocks: this.state.stocks,
-                width: window.innerWidth,
-                height: window.innerHeight,
                 currentholdings: current
             });
             document.getElementById("ticker").value = "";
@@ -307,6 +302,15 @@ var Deck = function (_React$Component3) {
             document.getElementById("price").value = "";
             document.getElementById("ticker").focus();
             document.getElementById("ticker").select();
+        }
+    }, {
+        key: "symbolsEntered",
+        value: function symbolsEntered() {
+            var symbols = document.getElementById("symbols").value;
+            this.setState({
+                symobls: symbols
+            });
+            this.getStockData(symbols);
         }
     }, {
         key: "render",
@@ -324,6 +328,14 @@ var Deck = function (_React$Component3) {
                     "button",
                     { onClick: function onClick() {
                             _this5.activateLasers();
+                        } },
+                    "submit"
+                ),
+                React.createElement("input", { type: "text", id: "symbols", defaultValue: "jnj,cgc,work,v,spy,rok,w,corr" }),
+                React.createElement(
+                    "button",
+                    { onClick: function onClick() {
+                            _this5.symbolsEntered();
                         } },
                     "submit"
                 )

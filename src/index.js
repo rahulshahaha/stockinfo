@@ -114,15 +114,9 @@ class Deck extends React.Component {
     constructor(props) {
         super(props);
         this.state ={
+            symbols: "",
             stocks:[
-                {ticker: "sfdfsd",name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp"},
-                {ticker: "W",name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown"},
-                {ticker: "B",name: "B", price: 123},
-                {ticker: "C",name: "C", price: 123},
-                {ticker: "D",name: "D", price: 123},
-                {ticker: "E",name: "E", price: 123},
-                {ticker: "F",name: "F", price: 123},
-                {ticker: "G",name: "G", price: 123}
+
             ],
             currentholdings: [
                 
@@ -141,7 +135,7 @@ class Deck extends React.Component {
             height: window.innerHeight
         };
         console.log(this.state.currentholdings);
-        this.getStockData();
+        //this.getStockData();
         window.addEventListener("resize", this.windowResized.bind(this));
       }
 
@@ -152,16 +146,14 @@ class Deck extends React.Component {
 
         this.setState(
             {
-                stocks: this.state.stocks,
                 width: window.innerWidth,
-                height: window.innerHeight,
-                currentholdings: this.state.currentholdings
+                height: window.innerHeight
             });
       }
 
-    getStockData(){
-        var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
-    
+    getStockData(symbols){
+        // var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
+        // var symbols = this.state.symbols;
     
     
     const Http = new XMLHttpRequest();
@@ -199,10 +191,7 @@ class Deck extends React.Component {
             stocks.push(b);
         }
        this.setState({
-           stocks: stocks,
-           width: window.innerWidth,
-           height: window.innerHeight,
-           currentholdings: this.state.currentholdings
+           stocks: stocks
         });
         
     }
@@ -249,9 +238,6 @@ class Deck extends React.Component {
         }
 
         this.setState({
-            stocks: this.state.stocks,
-            width: window.innerWidth,
-            height: window.innerHeight,
             currentholdings: current
          });
         document.getElementById("ticker").value = "";
@@ -262,6 +248,14 @@ class Deck extends React.Component {
          
     }
 
+    symbolsEntered(){
+        var symbols = document.getElementById("symbols").value
+        this.setState({
+            symobls: symbols
+        });
+        this.getStockData(symbols);
+    }
+
     render(){
     return (
         <div className="deck">
@@ -270,6 +264,8 @@ class Deck extends React.Component {
             <input type="number" id="price"></input>
             <input type="number" id="quantity"></input>
             <button onClick={() => {this.activateLasers()}}>submit</button>
+            <input type="text" id="symbols" defaultValue="jnj,cgc,work,v,spy,rok,w,corr"></input>
+            <button onClick={() => {this.symbolsEntered()}}>submit</button>
         </div>
 
     )
