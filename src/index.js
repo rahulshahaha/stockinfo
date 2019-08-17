@@ -6,11 +6,22 @@ class Card extends React.Component {
 
  
  render(){
+     var percentUp = (this.props.price - this.props.priceBought) / this.props.priceBought;
+     percentUp = percentUp * 100;
+     percentUp = percentUp.toFixed(2);
+     var dollarsUp = (this.props.price * this.props.quantity) - (this.props.priceBought * this.props.quantity);
+     dollarsUp = dollarsUp.toFixed(2);
+     var perfromanceClass = "overallPerformanceUp";
+     if(dollarsUp < 0){
+        perfromanceClass = "overallPerformanceDown";
+     }
      return(
         <div className="card">
             <h1 className="companyName">{this.props.name}</h1>
             <h6 className="currentPrice">${this.props.price}</h6>
             <h6 className={this.props.changeType}>&nbsp; ({this.props.percentChange}%)</h6>
+            <h6 className="overall">Overall:&nbsp;</h6>
+            <h6 className={perfromanceClass}>${dollarsUp}&nbsp;({percentUp}%)</h6>
             <Chart chartData = {this.props.chartData} width={this.props.width} height={this.props.height} />
         </div>
      )
@@ -113,13 +124,25 @@ class Deck extends React.Component {
                 {ticker: "F",name: "F", price: 123},
                 {ticker: "G",name: "G", price: 123}
             ],
+            currentholdings: null,
+            // currentholdings:[
+            //     {ticker: "w",quantity: 47, price: 120.4},
+            //     {ticker: "cgc",quantity: 10, price: 47.4},
+            //     {ticker: "corr",quantity: 38, price: 39.28},
+            //     {ticker: "jnj",quantity: 7, price: 129.5},
+            //     {ticker: "rok",quantity: 6, price: 159.75},
+            //     {ticker: "work",quantity: 73, price: 35.28},
+            //     {ticker: "spy",quantity: 11, price: 280.35},
+            //     {ticker: "v",quantity: 7, price: 145.14}
+            // ],
             width: window.innerWidth,
             height: window.innerHeight
-
         };
         this.getStockData();
         window.addEventListener("resize", this.windowResized.bind(this));
       }
+
+
 
       windowResized(){
        
@@ -128,7 +151,8 @@ class Deck extends React.Component {
             {
                 stocks: this.state.stocks,
                 width: window.innerWidth,
-                height: window.innerHeight
+                height: window.innerHeight,
+                currentholdings: this.state.currentholdings
             });
       }
 
@@ -171,7 +195,12 @@ class Deck extends React.Component {
             var b = {name: name,price: price,ticker: ticker,percentChange: percentChange, changeType: changeType, chartData: chartData};
             stocks.push(b);
         }
-       this.setState({stocks: stocks});
+       this.setState({
+           stocks: stocks,
+           width: window.innerWidth,
+           height: window.innerHeight,
+           currentholdings: this.state.currentholdings
+        });
         
     }
     
@@ -181,17 +210,28 @@ class Deck extends React.Component {
     
     generateCards(){
         var stateValues = this.state.stocks;
+        var currentHoldings = this.state.currentholdings;
         var heightS = this.state.height;
         var widthS = this.state.width;
         var cardsList = stateValues.map(function(s){
-            return <Card key={s.ticker} name={s.name} price={s.price} percentChange={s.percentChange} changeType={s.changeType} chartData={s.chartData} height={heightS} width={widthS} />;
+            var quantity = 0;
+            var priceBought = 0;
+            for(var key in currentHoldings){
+                if(currentHoldings[key].ticker.toLowerCase() == s.ticker.toLowerCase()){
+                    quantity = currentHoldings[key].quantity;
+                    priceBought = currentHoldings[key].price;
+                }
+            }
+            return <Card key={s.ticker} name={s.name} price={s.price} percentChange={s.percentChange} changeType={s.changeType} chartData={s.chartData} height={heightS} width={widthS} quantity={quantity} priceBought={priceBought} />;
         });
 
         return cardsList;
     }
 
     render(){
-    return <div className="deck">{this.generateCards()}</div>
+    return (
+        <div className="deck">{this.generateCards()}</div>
+    )
  }
 
  

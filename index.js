@@ -18,6 +18,15 @@ var Card = function (_React$Component) {
     _createClass(Card, [{
         key: "render",
         value: function render() {
+            var percentUp = (this.props.price - this.props.priceBought) / this.props.priceBought;
+            percentUp = percentUp * 100;
+            percentUp = percentUp.toFixed(2);
+            var dollarsUp = this.props.price * this.props.quantity - this.props.priceBought * this.props.quantity;
+            dollarsUp = dollarsUp.toFixed(2);
+            var perfromanceClass = "overallPerformanceUp";
+            if (dollarsUp < 0) {
+                perfromanceClass = "overallPerformanceDown";
+            }
             return React.createElement(
                 "div",
                 { className: "card" },
@@ -37,6 +46,20 @@ var Card = function (_React$Component) {
                     { className: this.props.changeType },
                     "\xA0 (",
                     this.props.percentChange,
+                    "%)"
+                ),
+                React.createElement(
+                    "h6",
+                    { className: "overall" },
+                    "Overall:\xA0"
+                ),
+                React.createElement(
+                    "h6",
+                    { className: perfromanceClass },
+                    "$",
+                    dollarsUp,
+                    "\xA0(",
+                    percentUp,
                     "%)"
                 ),
                 React.createElement(Chart, { chartData: this.props.chartData, width: this.props.width, height: this.props.height })
@@ -153,9 +176,19 @@ var Deck = function (_React$Component3) {
 
         _this3.state = {
             stocks: [{ ticker: "sfdfsd", name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp" }, { ticker: "W", name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown" }, { ticker: "B", name: "B", price: 123 }, { ticker: "C", name: "C", price: 123 }, { ticker: "D", name: "D", price: 123 }, { ticker: "E", name: "E", price: 123 }, { ticker: "F", name: "F", price: 123 }, { ticker: "G", name: "G", price: 123 }],
+            currentholdings: null,
+            // currentholdings:[
+            //     {ticker: "w",quantity: 47, price: 120.4},
+            //     {ticker: "cgc",quantity: 10, price: 47.4},
+            //     {ticker: "corr",quantity: 38, price: 39.28},
+            //     {ticker: "jnj",quantity: 7, price: 129.5},
+            //     {ticker: "rok",quantity: 6, price: 159.75},
+            //     {ticker: "work",quantity: 73, price: 35.28},
+            //     {ticker: "spy",quantity: 11, price: 280.35},
+            //     {ticker: "v",quantity: 7, price: 145.14}
+            // ],
             width: window.innerWidth,
             height: window.innerHeight
-
         };
         _this3.getStockData();
         window.addEventListener("resize", _this3.windowResized.bind(_this3));
@@ -169,7 +202,8 @@ var Deck = function (_React$Component3) {
             this.setState({
                 stocks: this.state.stocks,
                 width: window.innerWidth,
-                height: window.innerHeight
+                height: window.innerHeight,
+                currentholdings: this.state.currentholdings
             });
         }
     }, {
@@ -211,7 +245,12 @@ var Deck = function (_React$Component3) {
                     var b = { name: name, price: price, ticker: ticker, percentChange: percentChange, changeType: changeType, chartData: chartData };
                     stocks.push(b);
                 }
-                _this4.setState({ stocks: stocks });
+                _this4.setState({
+                    stocks: stocks,
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    currentholdings: _this4.state.currentholdings
+                });
             };
 
             Http.send();
@@ -220,10 +259,19 @@ var Deck = function (_React$Component3) {
         key: "generateCards",
         value: function generateCards() {
             var stateValues = this.state.stocks;
+            var currentHoldings = this.state.currentholdings;
             var heightS = this.state.height;
             var widthS = this.state.width;
             var cardsList = stateValues.map(function (s) {
-                return React.createElement(Card, { key: s.ticker, name: s.name, price: s.price, percentChange: s.percentChange, changeType: s.changeType, chartData: s.chartData, height: heightS, width: widthS });
+                var quantity = 0;
+                var priceBought = 0;
+                for (var key in currentHoldings) {
+                    if (currentHoldings[key].ticker.toLowerCase() == s.ticker.toLowerCase()) {
+                        quantity = currentHoldings[key].quantity;
+                        priceBought = currentHoldings[key].price;
+                    }
+                }
+                return React.createElement(Card, { key: s.ticker, name: s.name, price: s.price, percentChange: s.percentChange, changeType: s.changeType, chartData: s.chartData, height: heightS, width: widthS, quantity: quantity, priceBought: priceBought });
             });
 
             return cardsList;

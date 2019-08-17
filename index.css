@@ -27,31 +27,45 @@ code {
   margin-left: 10px;
 }
 
+.overallPerformance, .overall{
+  color: white;
+}
+
 .companyName{
   overflow:hidden;
   text-overflow: ellipsis;
   margin: 0 0 0 10px;
-  font-size: calc(0.5vw + 15pt);
+  font-size: 4vh;
   white-space: nowrap;
 
 }
 
-.currentPrice{
+.currentPrice, .overall{
   float: left;
 }
 
-.percentChangeUp{
+.percentChangeUp, .overallPerformanceUp{
   color: #007000;
 }
 
-.percentChangeDown{
+.percentChangeDown, .overallPerformanceDown{
   color: #D2222D;
 }
 
 .currentPrice, .percentChangeDown, .percentChangeUp{
-  font-size: calc(0.25vw + 10pt);
+  font-size: 2vh;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
+}
+
+.overall{
+  margin-left: 10px;
+}
+
+.overallPerformanceUp, .overallPerformanceDown, .overall{
+  font-size: 2vh;
+  margin-top: 0;
+  margin-bottom: 1vh;
 }
 
 .chart{
