@@ -124,7 +124,9 @@ class Deck extends React.Component {
                 {ticker: "F",name: "F", price: 123},
                 {ticker: "G",name: "G", price: 123}
             ],
-            currentholdings: null,
+            currentholdings: [
+                
+            ],
             // currentholdings:[
             //     {ticker: "w",quantity: 47, price: 120.4},
             //     {ticker: "cgc",quantity: 10, price: 47.4},
@@ -138,6 +140,7 @@ class Deck extends React.Component {
             width: window.innerWidth,
             height: window.innerHeight
         };
+        console.log(this.state.currentholdings);
         this.getStockData();
         window.addEventListener("resize", this.windowResized.bind(this));
       }
@@ -228,9 +231,47 @@ class Deck extends React.Component {
         return cardsList;
     }
 
+    activateLasers(){
+        var ticker = document.getElementById("ticker").value;
+        var quantity = document.getElementById("quantity").value;
+        var price = document.getElementById("price").value;
+        var current = this.state.currentholdings;
+        var updated = 0;
+        for(var key in current){
+            if(current[key].ticker.toLowerCase() == ticker.toLowerCase()){
+                current[key].quantity = quantity;
+                current[key].price = price;
+                updated = 1;
+            }
+        }
+        if(updated == 0){        
+        current.push({ticker: ticker,quantity: quantity,price: price})
+        }
+
+        this.setState({
+            stocks: this.state.stocks,
+            width: window.innerWidth,
+            height: window.innerHeight,
+            currentholdings: current
+         });
+        document.getElementById("ticker").value = "";
+        document.getElementById("quantity").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("ticker").focus();
+        document.getElementById("ticker").select();
+         
+    }
+
     render(){
     return (
-        <div className="deck">{this.generateCards()}</div>
+        <div className="deck">
+            {this.generateCards()}
+            <input type="text" id="ticker"></input>
+            <input type="number" id="price"></input>
+            <input type="number" id="quantity"></input>
+            <button onClick={() => {this.activateLasers()}}>submit</button>
+        </div>
+
     )
  }
 

@@ -176,7 +176,7 @@ var Deck = function (_React$Component3) {
 
         _this3.state = {
             stocks: [{ ticker: "sfdfsd", name: "Very Long Company Name Incorporated", price: 123, percentChange: 4, changeType: "percentChangeUp" }, { ticker: "W", name: "Wayfair, Inc.", price: 123, percentChange: -2, changeType: "percentChangeDown" }, { ticker: "B", name: "B", price: 123 }, { ticker: "C", name: "C", price: 123 }, { ticker: "D", name: "D", price: 123 }, { ticker: "E", name: "E", price: 123 }, { ticker: "F", name: "F", price: 123 }, { ticker: "G", name: "G", price: 123 }],
-            currentholdings: null,
+            currentholdings: [],
             // currentholdings:[
             //     {ticker: "w",quantity: 47, price: 120.4},
             //     {ticker: "cgc",quantity: 10, price: 47.4},
@@ -190,6 +190,7 @@ var Deck = function (_React$Component3) {
             width: window.innerWidth,
             height: window.innerHeight
         };
+        console.log(_this3.state.currentholdings);
         _this3.getStockData();
         window.addEventListener("resize", _this3.windowResized.bind(_this3));
         return _this3;
@@ -277,12 +278,55 @@ var Deck = function (_React$Component3) {
             return cardsList;
         }
     }, {
+        key: "activateLasers",
+        value: function activateLasers() {
+            var ticker = document.getElementById("ticker").value;
+            var quantity = document.getElementById("quantity").value;
+            var price = document.getElementById("price").value;
+            var current = this.state.currentholdings;
+            var updated = 0;
+            for (var key in current) {
+                if (current[key].ticker.toLowerCase() == ticker.toLowerCase()) {
+                    current[key].quantity = quantity;
+                    current[key].price = price;
+                    updated = 1;
+                }
+            }
+            if (updated == 0) {
+                current.push({ ticker: ticker, quantity: quantity, price: price });
+            }
+
+            this.setState({
+                stocks: this.state.stocks,
+                width: window.innerWidth,
+                height: window.innerHeight,
+                currentholdings: current
+            });
+            document.getElementById("ticker").value = "";
+            document.getElementById("quantity").value = "";
+            document.getElementById("price").value = "";
+            document.getElementById("ticker").focus();
+            document.getElementById("ticker").select();
+        }
+    }, {
         key: "render",
         value: function render() {
+            var _this5 = this;
+
             return React.createElement(
                 "div",
                 { className: "deck" },
-                this.generateCards()
+                this.generateCards(),
+                React.createElement("input", { type: "text", id: "ticker" }),
+                React.createElement("input", { type: "number", id: "price" }),
+                React.createElement("input", { type: "number", id: "quantity" }),
+                React.createElement(
+                    "button",
+                    { onClick: function onClick() {
+                            _this5.activateLasers();
+                        } },
+                    "submit"
+                )
             );
         }
     }]);
