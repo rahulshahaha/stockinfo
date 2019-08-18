@@ -134,7 +134,6 @@ class Deck extends React.Component {
             width: window.innerWidth,
             height: window.innerHeight
         };
-        console.log(this.state.currentholdings);
         //this.getStockData();
         window.addEventListener("resize", this.windowResized.bind(this));
       }
@@ -260,9 +259,9 @@ class Deck extends React.Component {
     return (
         <div className="deck">
             {this.generateCards()}
-            <input type="text" id="ticker"></input>
-            <input type="number" id="price"></input>
-            <input type="number" id="quantity"></input>
+            <input type="text" id="ticker" placeholder="Ticker"></input>
+            <input type="number" id="price" placeholder="Price"></input>
+            <input type="number" id="quantity" placeholder="Quantity"></input>
             <button onClick={() => {this.activateLasers()}}>submit</button>
             <input type="text" id="symbols" defaultValue="jnj,cgc,work,v,spy,rok,w,corr"></input>
             <button onClick={() => {this.symbolsEntered()}}>submit</button>

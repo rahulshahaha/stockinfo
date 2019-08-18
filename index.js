@@ -191,7 +191,6 @@ var Deck = function (_React$Component3) {
             width: window.innerWidth,
             height: window.innerHeight
         };
-        console.log(_this3.state.currentholdings);
         //this.getStockData();
         window.addEventListener("resize", _this3.windowResized.bind(_this3));
         return _this3;
@@ -321,9 +320,9 @@ var Deck = function (_React$Component3) {
                 "div",
                 { className: "deck" },
                 this.generateCards(),
-                React.createElement("input", { type: "text", id: "ticker" }),
-                React.createElement("input", { type: "number", id: "price" }),
-                React.createElement("input", { type: "number", id: "quantity" }),
+                React.createElement("input", { type: "text", id: "ticker", placeholder: "Ticker" }),
+                React.createElement("input", { type: "number", id: "price", placeholder: "Price" }),
+                React.createElement("input", { type: "number", id: "quantity", placeholder: "Quantity" }),
                 React.createElement(
                     "button",
                     { onClick: function onClick() {
