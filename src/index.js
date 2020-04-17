@@ -148,7 +148,7 @@ class Deck extends React.Component {
       }
 
     getStockData(symbols){
-        // var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
+         var symbols = "jnj,cgc,work,v,spy,rok,w,corr";
         // var symbols = this.state.symbols;
     
     
