@@ -118,6 +118,9 @@ class Deck extends React.Component {
             stocks:[
 
             ],
+            currentholdings: [
+                
+            ],
             currentholdings:[
                 {ticker: "w",quantity: 47, price: 120.4},
                 {ticker: "cgc",quantity: 10, price: 47.4},
